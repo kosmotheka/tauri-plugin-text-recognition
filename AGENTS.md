@@ -47,5 +47,7 @@ distrobox enter library-dev -- bash -ic '<command>'
 |---|---|
 | Rust format / lint / test | `cargo fmt --all` · `cargo clippy --all-targets -- -D warnings` · `cargo test` |
 | TypeScript API build | `npm install` · `npm run build` |
-| Example app on an Android device | `cd examples/tauri-app && npm install && npm run tauri android dev` |
+| Example app on an Android device (the first time, `npm run tauri android init`) | `cd examples/tauri-app && npm install && npm run tauri android dev` |
+| Mobile code compiles (CI does it too) | `cargo clippy --target aarch64-linux-android -- -D warnings` |
+| Kotlin compiles: build the example app | `cd examples/tauri-app && npm run tauri android build -- --debug --apk --target aarch64` |
 | Secret scan before pushing | `docker run --rm -v "$PWD":/repo zricethezav/gitleaks:v8.28.0 git /repo --redact --no-banner` |

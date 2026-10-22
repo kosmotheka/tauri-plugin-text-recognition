@@ -1,6 +1,6 @@
 <script>
   import Greet from './lib/Greet.svelte'
-  import { ping } from 'tauri-plugin-text-recognition-api'
+  import { recognizeText } from 'tauri-plugin-text-recognition-api'
 
 	let response = $state('')
 
@@ -8,8 +8,10 @@
 		response += `[${new Date().toLocaleTimeString()}] ` + (typeof returnValue === 'string' ? returnValue : JSON.stringify(returnValue)) + '<br>'
 	}
 
-	function _ping() {
-		ping("Pong!").then(updateResponse).catch(updateResponse)
+	let path = $state('')
+
+	function recognize() {
+		recognizeText({ path }).then(updateResponse).catch(updateResponse)
 	}
 </script>
 
@@ -37,7 +39,8 @@
   </div>
 
   <div>
-    <button onclick="{_ping}">Ping</button>
+    <input bind:value={path} placeholder="Image path or content:// URI" />
+    <button onclick="{recognize}">Recognize text</button>
     <div>{@html response}</div>
   </div>
 

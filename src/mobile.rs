@@ -15,7 +15,8 @@ pub fn init<R: Runtime, C: DeserializeOwned>(
     api: PluginApi<R, C>,
 ) -> crate::Result<TextRecognition<R>> {
     #[cfg(target_os = "android")]
-    let handle = api.register_android_plugin("app.kosmotheka.textrecognition", "ExamplePlugin")?;
+    let handle =
+        api.register_android_plugin("app.kosmotheka.textrecognition", "TextRecognitionPlugin")?;
     #[cfg(target_os = "ios")]
     let handle = api.register_ios_plugin(init_plugin_text_recognition)?;
     Ok(TextRecognition(handle))
@@ -25,9 +26,13 @@ pub fn init<R: Runtime, C: DeserializeOwned>(
 pub struct TextRecognition<R: Runtime>(PluginHandle<R>);
 
 impl<R: Runtime> TextRecognition<R> {
-    pub fn ping(&self, payload: PingRequest) -> crate::Result<PingResponse> {
+    pub async fn recognize_text(
+        &self,
+        payload: RecognizeTextRequest,
+    ) -> crate::Result<RecognizedText> {
         self.0
-            .run_mobile_plugin("ping", payload)
+            .run_mobile_plugin_async("recognizeText", payload)
+            .await
             .map_err(Into::into)
     }
 }

@@ -5,9 +5,9 @@ use crate::Result;
 use crate::TextRecognitionExt;
 
 #[command]
-pub(crate) async fn ping<R: Runtime>(
+pub(crate) async fn recognize_text<R: Runtime>(
     app: AppHandle<R>,
-    payload: PingRequest,
-) -> Result<PingResponse> {
-    app.text_recognition().ping(payload)
+    payload: RecognizeTextRequest,
+) -> Result<RecognizedText> {
+    app.text_recognition().recognize_text(payload).await
 }

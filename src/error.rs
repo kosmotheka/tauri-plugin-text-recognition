@@ -4,6 +4,8 @@ pub type Result<T> = std::result::Result<T, Error>;
 
 #[derive(Debug, thiserror::Error)]
 pub enum Error {
+    #[error("text recognition is not supported on this platform")]
+    Unsupported,
     #[error(transparent)]
     Io(#[from] std::io::Error),
     #[cfg(mobile)]

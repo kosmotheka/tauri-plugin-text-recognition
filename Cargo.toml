@@ -15,8 +15,11 @@ links = "tauri-plugin-text-recognition"
 
 [dependencies]
 tauri = { version = "2.11.6" }
-serde = "1.0"
+serde = { version = "1.0", features = ["derive"] }
 thiserror = "2"
+
+[dev-dependencies]
+serde_json = "1"
 
 [build-dependencies]
 tauri-plugin = { version = "2.6.3", features = ["build"] }

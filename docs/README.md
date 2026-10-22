@@ -6,10 +6,10 @@ A Tauri mobile plugin is one feature written three times, once per layer, plus t
 
 ```
 App (JavaScript)
-  └─ guest-js/index.ts        invoke('plugin:text-recognition|<command>', args)
+  └─ guest-js/index.ts        invoke('plugin:text-recognition|recognize_text', { payload })
        └─ src/commands.rs      #[tauri::command]: receives the arguments, already deserialized
             ├─ src/desktop.rs  on Linux, Windows and macOS (today: "unsupported")
-            └─ src/mobile.rs   on Android: run_mobile_plugin("<command>", args)
+            └─ src/mobile.rs   on Android: run_mobile_plugin_async("recognizeText", payload)
                  └─ android/…/TextRecognitionPlugin.kt   @Command: reads the arguments,
                                                           calls ML Kit, resolves the call
 ```
@@ -28,4 +28,8 @@ The answer travels back the same way: Kotlin builds a JSON object and resolves t
 
 ## Errors
 
-Every failure reaches JavaScript as a rejected promise with a message. `src/error.rs` holds the Rust error type; a failure on the Kotlin side (`invoke.reject(message)`) arrives as `PluginInvoke`.
+Every failure reaches JavaScript as a rejected promise with a message. `src/error.rs` holds the Rust error type: `Unsupported` on desktop, and `PluginInvoke` for a failure on the Kotlin side (`invoke.reject(message)`).
+
+## Names on each side
+
+Rust names functions in `snake_case` and Kotlin in `camelCase`, so one command has two spellings: JavaScript invokes `recognize_text` (the Rust command, and the name in the permissions), and Rust calls the Kotlin method `recognizeText`. The fields of the models are `camelCase` everywhere: `#[serde(rename_all = "camelCase")]` turns Rust's `image_width` into `imageWidth`.

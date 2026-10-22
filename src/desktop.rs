@@ -14,9 +14,10 @@ pub fn init<R: Runtime, C: DeserializeOwned>(
 pub struct TextRecognition<R: Runtime>(AppHandle<R>);
 
 impl<R: Runtime> TextRecognition<R> {
-    pub fn ping(&self, payload: PingRequest) -> crate::Result<PingResponse> {
-        Ok(PingResponse {
-            value: payload.value,
-        })
+    pub async fn recognize_text(
+        &self,
+        _payload: RecognizeTextRequest,
+    ) -> crate::Result<RecognizedText> {
+        Err(crate::Error::Unsupported)
     }
 }

@@ -35,7 +35,7 @@ impl<R: Runtime, T: Manager<R>> crate::TextRecognitionExt<R> for T {
 /// Initializes the plugin.
 pub fn init<R: Runtime>() -> TauriPlugin<R> {
     Builder::new("text-recognition")
-        .invoke_handler(tauri::generate_handler![commands::ping])
+        .invoke_handler(tauri::generate_handler![commands::recognize_text])
         .setup(|app, api| {
             #[cfg(mobile)]
             let text_recognition = mobile::init(app, api)?;

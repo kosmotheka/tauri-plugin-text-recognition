@@ -4,7 +4,7 @@ Default permissions for the plugin
 
 #### This default permission set includes the following:
 
-- `allow-ping`
+- `allow-recognize-text`
 
 ## Permission Table
 
@@ -18,12 +18,12 @@ Default permissions for the plugin
 <tr>
 <td>
 
-`text-recognition:allow-ping`
+`text-recognition:allow-recognize-text`
 
 </td>
 <td>
 
-Enables the ping command without any pre-configured scope.
+Enables the recognize_text command without any pre-configured scope.
 
 </td>
 </tr>
@@ -31,12 +31,12 @@ Enables the ping command without any pre-configured scope.
 <tr>
 <td>
 
-`text-recognition:deny-ping`
+`text-recognition:deny-recognize-text`
 
 </td>
 <td>
 
-Denies the ping command without any pre-configured scope.
+Denies the recognize_text command without any pre-configured scope.
 
 </td>
 </tr>

@@ -1,13 +1,117 @@
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
-pub struct PingRequest {
-    pub value: Option<String>,
+pub struct RecognizeTextRequest {
+    /// A file path or a `content://` URI.
+    pub path: String,
 }
 
-#[derive(Debug, Clone, Default, Deserialize, Serialize)]
+#[derive(Debug, Clone, Default, PartialEq, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
-pub struct PingResponse {
-    pub value: Option<String>,
+pub struct RecognizedText {
+    /// All the text, blocks separated by a blank line.
+    pub text: String,
+    /// The image as the engine saw it, after its rotation is applied.
+    pub image_width: u32,
+    pub image_height: u32,
+    pub blocks: Vec<TextBlock>,
+}
+
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TextBlock {
+    pub text: String,
+    pub bounds: Bounds,
+    pub lines: Vec<TextLine>,
+}
+
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TextLine {
+    pub text: String,
+    pub bounds: Bounds,
+    /// From 0 to 1, when the engine gives it.
+    pub confidence: Option<f32>,
+    /// Degrees, when the engine gives it.
+    pub angle: Option<f32>,
+}
+
+/// A rectangle in pixels of the image.
+#[derive(Debug, Clone, Copy, PartialEq, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Bounds {
+    pub left: i32,
+    pub top: i32,
+    pub width: u32,
+    pub height: u32,
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use serde_json::json;
+
+    #[test]
+    fn result_uses_the_names_of_the_typescript_api() {
+        let bounds = Bounds {
+            left: 1,
+            top: 2,
+            width: 3,
+            height: 4,
+        };
+        let result = RecognizedText {
+            text: "ISBN 978-84-376-0494-7".into(),
+            image_width: 640,
+            image_height: 480,
+            blocks: vec![TextBlock {
+                text: "ISBN 978-84-376-0494-7".into(),
+                bounds,
+                lines: vec![TextLine {
+                    text: "ISBN 978-84-376-0494-7".into(),
+                    bounds,
+                    confidence: Some(0.5),
+                    angle: None,
+                }],
+            }],
+        };
+
+        let bounds = json!({ "left": 1, "top": 2, "width": 3, "height": 4 });
+        assert_eq!(
+            serde_json::to_value(&result).unwrap(),
+            json!({
+                "text": "ISBN 978-84-376-0494-7",
+                "imageWidth": 640,
+                "imageHeight": 480,
+                "blocks": [{
+                    "text": "ISBN 978-84-376-0494-7",
+                    "bounds": bounds,
+                    "lines": [{
+                        "text": "ISBN 978-84-376-0494-7",
+                        "bounds": bounds,
+                        "confidence": 0.5,
+                        "angle": null
+                    }]
+                }]
+            })
+        );
+    }
+
+    #[test]
+    fn missing_confidence_and_angle_are_read_as_none() {
+        let line: TextLine = serde_json::from_value(json!({
+            "text": "",
+            "bounds": { "left": -2, "top": 0, "width": 0, "height": 0 }
+        }))
+        .unwrap();
+
+        assert_eq!(line.confidence, None);
+        assert_eq!(line.angle, None);
+        assert_eq!(line.bounds.left, -2);
+    }
+
+    #[test]
+    fn request_needs_a_path() {
+        assert!(serde_json::from_value::<RecognizeTextRequest>(json!({})).is_err());
+    }
 }

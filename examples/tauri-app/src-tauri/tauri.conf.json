@@ -1,10 +1,10 @@
 {
-  "productName": "tauri-app",
+  "productName": "Text recognition example",
   "version": "0.1.0",
   "identifier": "app.kosmotheka.textrecognition.example",
   "build": {
-    "beforeDevCommand": "pnpm dev",
-    "beforeBuildCommand": "pnpm build",
+    "beforeDevCommand": "npm run dev",
+    "beforeBuildCommand": "npm run build",
     "devUrl": "http://localhost:1420",
     "frontendDist": "../dist"
   },
@@ -18,7 +18,7 @@
         "fullscreen": false,
         "height": 600,
         "resizable": true,
-        "title": "tauri-app",
+        "title": "Text recognition example",
         "width": 800
       }
     ]
