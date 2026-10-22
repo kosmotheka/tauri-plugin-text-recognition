@@ -22,7 +22,8 @@ pub struct RecognizedText {
 #[serde(rename_all = "camelCase")]
 pub struct TextBlock {
     pub text: String,
-    pub bounds: Bounds,
+    /// Where the block is, when the engine can tell.
+    pub bounds: Option<Bounds>,
     pub lines: Vec<TextLine>,
 }
 
@@ -30,7 +31,8 @@ pub struct TextBlock {
 #[serde(rename_all = "camelCase")]
 pub struct TextLine {
     pub text: String,
-    pub bounds: Bounds,
+    /// Where the line is, when the engine can tell.
+    pub bounds: Option<Bounds>,
     /// From 0 to 1, when the engine gives it.
     pub confidence: Option<f32>,
     /// Degrees, when the engine gives it.
@@ -66,10 +68,10 @@ mod tests {
             image_height: 480,
             blocks: vec![TextBlock {
                 text: "ISBN 978-84-376-0494-7".into(),
-                bounds,
+                bounds: Some(bounds),
                 lines: vec![TextLine {
                     text: "ISBN 978-84-376-0494-7".into(),
-                    bounds,
+                    bounds: Some(bounds),
                     confidence: Some(0.5),
                     angle: None,
                 }],
@@ -98,16 +100,21 @@ mod tests {
     }
 
     #[test]
-    fn missing_confidence_and_angle_are_read_as_none() {
-        let line: TextLine = serde_json::from_value(json!({
-            "text": "",
-            "bounds": { "left": -2, "top": 0, "width": 0, "height": 0 }
-        }))
-        .unwrap();
+    fn missing_bounds_confidence_and_angle_are_read_as_none() {
+        let line: TextLine = serde_json::from_value(json!({ "text": "" })).unwrap();
 
+        assert_eq!(line.bounds, None);
         assert_eq!(line.confidence, None);
         assert_eq!(line.angle, None);
-        assert_eq!(line.bounds.left, -2);
+    }
+
+    #[test]
+    fn bounds_can_start_outside_the_image() {
+        let bounds: Bounds =
+            serde_json::from_value(json!({ "left": -2, "top": -1, "width": 10, "height": 5 }))
+                .unwrap();
+
+        assert_eq!((bounds.left, bounds.top), (-2, -1));
     }
 
     #[test]

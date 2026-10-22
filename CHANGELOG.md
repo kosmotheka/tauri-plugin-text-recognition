@@ -5,4 +5,4 @@ All notable changes to this project are written here, for the people who use the
 ## [Unreleased]
 
 - The plugin skeleton, generated with `tauri plugin new`, and the plan for 0.1.
-- `recognizeText({ path })` and its result types. On Android it answers with an empty result for now; on desktop it fails with "not supported".
+- `recognizeText({ path })` and its result types: on Android it reads the text with ML Kit, through Google Play Services; on desktop it fails with "not supported".

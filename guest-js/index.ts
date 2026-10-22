@@ -16,13 +16,15 @@ export interface RecognizedText {
 
 export interface TextBlock {
   text: string
-  bounds: Bounds
+  /** Where the block is, when the engine can tell. */
+  bounds: Bounds | null
   lines: TextLine[]
 }
 
 export interface TextLine {
   text: string
-  bounds: Bounds
+  /** Where the line is, when the engine can tell. */
+  bounds: Bounds | null
   /** From 0 to 1, when the engine gives it. */
   confidence: number | null
   /** Degrees, when the engine gives it. */

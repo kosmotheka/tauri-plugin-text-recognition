@@ -18,7 +18,7 @@ The plugin returns the recognized text in blocks and lines, each with its positi
 
 The first need (Kosmotheka on a phone) is Android. On desktop and iOS the commands exist and return a clear "unsupported on this platform" error, so an app can call them everywhere and decide what to show. A desktop engine (`ocrs` in Rust, or Tesseract) and iOS (Vision) are left to later versions or to contributors.
 
-## D5 · ML Kit through Google Play Services — `proposed`
+## D5 · ML Kit through Google Play Services — `accepted`
 
 Two ways to ship ML Kit's model on Android:
 
@@ -28,7 +28,9 @@ Two ways to ship ML Kit's model on Android:
 | First use | Play Services downloads the model; until then, recognition fails | Works offline from the install |
 | Devices without Play Services | Does not work | Works |
 
-**Proposal:** Play Services, like Tauri's own barcode scanner, which Kosmotheka already uses. An app that needs the bundled model could get a Gradle switch later. To confirm while building 0.1.
+**Decision (22/10/2026):** Play Services (`play-services-mlkit-text-recognition` 19.0.1), like Tauri's own barcode scanner, which Kosmotheka already uses. An app that needs the bundled model could get a Gradle switch later.
+
+The plugin's Android manifest asks Play Services to download the model when the app is installed (`com.google.mlkit.vision.DEPENDENCIES` = `ocr`), so it is usually there before the first use. If it is not, the call fails with a message saying so, and the app can try again later.
 
 ## D6 · First input: an image file — `proposed`
 

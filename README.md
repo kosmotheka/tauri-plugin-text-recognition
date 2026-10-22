@@ -12,7 +12,7 @@ It was started for [Kosmotheka](https://kosmotheka.com), a household catalogue a
 
 | Platform | Support |
 |---|---|
-| Android | Planned for 0.1 (ML Kit, Latin script) |
+| Android | In progress for 0.1 (ML Kit through Google Play Services, Latin script). Devices without Play Services are not supported |
 | iOS | Not planned yet. Contributions welcome |
 | Desktop | Not planned yet: the commands return an "unsupported" error |
 
@@ -40,11 +40,18 @@ And allow it in your capabilities (`src-tauri/capabilities/default.json`):
 
 ## Use
 
-The API of 0.1 is still being designed: see [the plan](docs/plans/0.1.md#the-api).
+```ts
+import { recognizeText } from 'tauri-plugin-text-recognition-api'
+
+const result = await recognizeText({ path })   // a file path or a content:// URI
+console.log(result.text)
+```
+
+The result has the text in blocks and lines, each with its position: see [the API](docs/plans/0.1.md#the-api). An image with no text gives an empty result; an image that cannot be opened, or a model that is not on the device yet, is an error.
 
 ## Privacy
 
-The image never leaves the device: ML Kit runs the model locally. If the plugin ends up using the model that Google Play Services downloads (an open question in [the plan](docs/plans/0.1.md#open-questions)), Play Services fetches it the first time and, like any Play Services component, may send usage and diagnostics data to Google. See [ML Kit's terms](https://developers.google.com/ml-kit/terms) and [its data disclosure](https://developers.google.com/ml-kit/android-data-disclosure). Your app must meet those terms.
+The image never leaves the device: ML Kit runs the model locally. The model comes from Google Play Services, which downloads it when your app is installed and, like any Play Services component, may send usage and diagnostics data to Google. See [ML Kit's terms](https://developers.google.com/ml-kit/terms) and [its data disclosure](https://developers.google.com/ml-kit/android-data-disclosure). Your app must meet those terms.
 
 ## Documentation
 
