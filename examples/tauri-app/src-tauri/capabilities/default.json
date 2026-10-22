@@ -1,12 +1,30 @@
 {
   "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "default",
-  "description": "enables the default permissions",
+  "description": "What the example app needs: open an image, write the photo to the app's cache, and the plugin",
   "windows": [
     "main"
   ],
   "permissions": [
     "core:default",
+    "dialog:allow-open",
+    "fs:allow-read-file",
+    {
+      "identifier": "fs:allow-mkdir",
+      "allow": [
+        {
+          "path": "$APPCACHE"
+        }
+      ]
+    },
+    {
+      "identifier": "fs:allow-write-file",
+      "allow": [
+        {
+          "path": "$APPCACHE/**"
+        }
+      ]
+    },
     "text-recognition:default"
   ]
 }

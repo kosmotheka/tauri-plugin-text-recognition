@@ -1,5 +1,5 @@
 {
-  "name": "tauri-app",
+  "name": "text-recognition-example",
   "private": true,
   "version": "0.1.0",
   "type": "module",
@@ -11,7 +11,9 @@
   },
   "dependencies": {
     "@tauri-apps/api": "^2.0.0",
-    "tauri-plugin-text-recognition-api": "file:../../"
+    "tauri-plugin-text-recognition-api": "file:../../",
+    "@tauri-apps/plugin-dialog": "^2.8.3",
+    "@tauri-apps/plugin-fs": "^2.7.1"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^7.0.0",
