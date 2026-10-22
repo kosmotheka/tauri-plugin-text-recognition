@@ -1,0 +1,22 @@
+[package]
+name = "tauri-plugin-text-recognition"
+version = "0.1.0"
+authors = [ "Kosmotheka contributors" ]
+description = "Read printed text from images on the device, with ML Kit on Android. No network."
+edition = "2021"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/kosmotheka/tauri-plugin-text-recognition"
+keywords = ["tauri", "tauri-plugin", "ocr", "text-recognition", "mlkit"]
+categories = ["gui", "computer-vision"]
+readme = "README.md"
+rust-version = "1.77.2"
+exclude = ["/examples", "/dist-js", "/guest-js", "/node_modules"]
+links = "tauri-plugin-text-recognition"
+
+[dependencies]
+tauri = { version = "2.11.6" }
+serde = "1.0"
+thiserror = "2"
+
+[build-dependencies]
+tauri-plugin = { version = "2.6.3", features = ["build"] }

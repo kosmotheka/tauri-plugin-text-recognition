@@ -1,0 +1,39 @@
+# Decisions
+
+Each decision has a number, a status (`proposed`, `accepted`, `replaced by Dn`) and the reason behind it. Read the relevant ones before proposing a change of direction.
+
+## D1 · Its own repository, under a permissive licence — `accepted`
+
+The plugin is useful to any Tauri app, not only to Kosmotheka, so it lives in its own repository and Kosmotheka uses it as one more dependency. Licence: **MIT OR Apache-2.0**, the usual pair in Rust and in Tauri's own plugins. A copyleft licence would keep most apps from using it.
+
+## D2 · A neutral name — `accepted`
+
+`tauri-plugin-text-recognition` (crate) and `tauri-plugin-text-recognition-api` (npm), after Tauri's naming convention. Not "mlkit": ML Kit is one engine, on one platform, and a Google trademark. A desktop engine can come later under the same name.
+
+## D3 · Generic results, no app logic — `accepted`
+
+The plugin returns the recognized text in blocks and lines, each with its position. It does not look for ISBNs, prices or dates: that is the app's job. Kosmotheka's ISBN search (978 or 979, check digit) stays in Kosmotheka.
+
+## D4 · Android first, the rest returns "unsupported" — `accepted`
+
+The first need (Kosmotheka on a phone) is Android. On desktop and iOS the commands exist and return a clear "unsupported on this platform" error, so an app can call them everywhere and decide what to show. A desktop engine (`ocrs` in Rust, or Tesseract) and iOS (Vision) are left to later versions or to contributors.
+
+## D5 · ML Kit through Google Play Services — `proposed`
+
+Two ways to ship ML Kit's model on Android:
+
+| | Model in Google Play Services (`play-services-mlkit-text-recognition`) | Model inside the app (`com.google.mlkit:text-recognition`) |
+|---|---|---|
+| App size | Almost nothing | About 4 MB more per script |
+| First use | Play Services downloads the model; until then, recognition fails | Works offline from the install |
+| Devices without Play Services | Does not work | Works |
+
+**Proposal:** Play Services, like Tauri's own barcode scanner, which Kosmotheka already uses. An app that needs the bundled model could get a Gradle switch later. To confirm while building 0.1.
+
+## D6 · First input: an image file — `proposed`
+
+0.1 reads an image the app already has: a file path or an Android `content://` URI (what a file picker or the camera app returns). Reading live from the camera, as the barcode scanner does, is a bigger piece (CameraX, a preview, permissions) and waits until 0.1 has been tried in a real app.
+
+## D7 · Documentation and plans in English, in the open — `accepted`
+
+The repository is public from the first commit and its audience is the Tauri community. Plans live in `docs/plans/` so anyone can see where the project is going.
