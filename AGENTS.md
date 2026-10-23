@@ -11,7 +11,7 @@ Read [docs/README.md](docs/README.md) for how the pieces fit, [docs/decisions.md
 ## Repository layout
 
 ```
-src/            Rust side: the commands, the models, desktop.rs and mobile.rs
+src/            Rust side: the commands, the models, android.rs and unsupported.rs (every other platform)
 android/        Kotlin side: the Android library that calls ML Kit
 guest-js/       TypeScript API (published to npm as tauri-plugin-text-recognition-api)
 permissions/    Tauri permissions for each command
@@ -25,7 +25,7 @@ docs/           Documentation; docs/plans/ holds the work plans, in the open
 - **The repository is public from the first commit.** Never commit an email address other than a GitHub noreply one, a local path (`/home/…`), a key, a token or anything about the maintainer's machines or servers. Before every push, run gitleaks (see CONTRIBUTING.md).
 - Clean, readable code. Comments are short and explain *why*; never restate what the code does.
 - The same types on the three sides: a field added to a model goes in `src/models.rs`, in the Kotlin result and in `guest-js/index.ts`, with the same `camelCase` name.
-- A new command means: the function in `src/commands.rs`, its entry in `build.rs` (`COMMANDS`) and in `generate_handler!`, the desktop and mobile implementations, the Kotlin `@Command`, the TypeScript function, and its permission in `permissions/`.
+- A new command means: the function in `src/commands.rs`, its entry in `build.rs` (`COMMANDS`) and in `generate_handler!`, the Android and unsupported implementations (`src/android.rs`, `src/unsupported.rs`), the Kotlin `@Command`, the TypeScript function, and its permission in `permissions/`.
 - The plugin never fails silently. An image that cannot be read is an error with a clear message; an image with no text is an empty result, not an error.
 - Unit tests never need a device. Tests that do (instrumented Android tests, the example app) are run by hand and say so.
 - Keep dependencies few, and pin GitHub Actions to a full commit SHA.

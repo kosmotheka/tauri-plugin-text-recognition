@@ -8,8 +8,8 @@ A Tauri mobile plugin is one feature written three times, once per layer, plus t
 App (JavaScript)
   └─ guest-js/index.ts        invoke('plugin:text-recognition|recognize_text', { payload })
        └─ src/commands.rs      #[tauri::command]: receives the arguments, already deserialized
-            ├─ src/desktop.rs  on Linux, Windows and macOS (today: "unsupported")
-            └─ src/mobile.rs   on Android: run_mobile_plugin_async("recognizeText", payload)
+            ├─ src/unsupported.rs  everywhere but Android, iOS included: "unsupported"
+            └─ src/android.rs      on Android: run_mobile_plugin_async("recognizeText", payload)
                  └─ android/…/TextRecognitionPlugin.kt   @Command: reads the arguments,
                                                           calls ML Kit, resolves the call
 ```
@@ -20,8 +20,8 @@ The answer travels back the same way: Kotlin builds a JSON object and resolves t
 
 - **`build.rs`** lists the commands (`COMMANDS`). From that list Tauri generates an `allow-<command>` and a `deny-<command>` permission for each one.
 - **`permissions/default.toml`** is the set an app gets with `text-recognition:default`.
-- **`src/lib.rs`** builds the plugin: it registers the commands and, at start-up, creates the desktop or the mobile implementation and stores it in Tauri's state, so any command can reach it with `app.text_recognition()`.
-- **`src/mobile.rs`** registers the Kotlin class (`register_android_plugin`) by its package and class name.
+- **`src/lib.rs`** builds the plugin: it registers the commands and, at start-up, creates the Android or the unsupported implementation (chosen with `#[cfg(target_os = "android")]`) and stores it in Tauri's state, so any command can reach it with `app.text_recognition()`.
+- **`src/android.rs`** registers the Kotlin class (`register_android_plugin`) by its package and class name.
 - **`android/`** is an Android library. Tauri adds it to the app's Gradle build when the app is built for Android, so its dependencies (ML Kit) become the app's.
 - **`guest-js/`** is the TypeScript API, built with Rollup into `dist-js/` and published to npm.
 - **`examples/tauri-app/`** is a Tauri app that uses the plugin from the parent folder, to try it on a device.
@@ -45,7 +45,7 @@ Every failure reaches JavaScript as a rejected promise with a message. `src/erro
 
 - **Rust unit tests** (`cargo test`) check the JSON shape of the models: the names JavaScript sees, and that a missing box, confidence or angle is read as empty. They need no device.
 - **The example app** is the test of the Android side, by hand on a real phone: [examples/tauri-app/README.md](../examples/tauri-app/README.md) says what to try.
-- **CI** checks formatting, Clippy for Linux and for Android (`mobile.rs` only compiles for a mobile target), the tests and the TypeScript build. It does not build the Kotlin code: that needs the Android SDK and an app around it.
+- **CI** checks formatting, Clippy for Linux and for Android (`android.rs` only compiles for Android), the tests and the TypeScript build. It does not build the Kotlin code: that needs the Android SDK and an app around it.
 
 ## Names on each side
 

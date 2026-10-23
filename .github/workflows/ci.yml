@@ -29,7 +29,7 @@ jobs:
       - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
       - run: cargo fmt --all -- --check
       - run: cargo clippy --all-targets -- -D warnings
-      - name: Clippy for Android (the mobile code only compiles there)
+      - name: Clippy for Android (android.rs only compiles there)
         run: cargo clippy --target aarch64-linux-android -- -D warnings
       - run: cargo test
 

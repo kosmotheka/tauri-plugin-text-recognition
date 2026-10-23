@@ -5,14 +5,14 @@ pub type Result<T> = std::result::Result<T, Error>;
 /// Why the text could not be read. JavaScript receives its message.
 #[derive(Debug, thiserror::Error)]
 pub enum Error {
-    /// Any platform but Android.
+    /// Any platform but Android, iOS included.
     #[error("text recognition is not supported on this platform")]
     Unsupported,
     #[error(transparent)]
     Io(#[from] std::io::Error),
     /// The Android side failed: the image could not be opened, the model is
     /// not on the device yet, or recognition failed. The message says which.
-    #[cfg(mobile)]
+    #[cfg(target_os = "android")]
     #[error(transparent)]
     PluginInvoke(#[from] tauri::plugin::mobile::PluginInvokeError),
 }

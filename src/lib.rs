@@ -1,5 +1,5 @@
 //! Reads printed text from an image on the device, with no network: ML Kit on
-//! Android. On other platforms the command fails with [`Error::Unsupported`].
+//! Android. On every other platform, iOS included, the command fails with [`Error::Unsupported`].
 //!
 //! Register the plugin with [`init`] and allow `text-recognition:default` in
 //! your capabilities. JavaScript calls it through the
@@ -31,10 +31,10 @@ use tauri::{
 
 pub use models::*;
 
-#[cfg(desktop)]
-mod desktop;
-#[cfg(mobile)]
-mod mobile;
+#[cfg(target_os = "android")]
+mod android;
+#[cfg(not(target_os = "android"))]
+mod unsupported;
 
 mod commands;
 mod error;
@@ -42,10 +42,10 @@ mod models;
 
 pub use error::{Error, Result};
 
-#[cfg(desktop)]
-pub use desktop::TextRecognition;
-#[cfg(mobile)]
-pub use mobile::TextRecognition;
+#[cfg(target_os = "android")]
+pub use android::TextRecognition;
+#[cfg(not(target_os = "android"))]
+pub use unsupported::TextRecognition;
 
 /// Gives [`tauri::App`], [`tauri::AppHandle`], [`tauri::Window`] and any other
 /// [`Manager`] access to the plugin.
@@ -64,10 +64,10 @@ pub fn init<R: Runtime>() -> TauriPlugin<R> {
     Builder::new("text-recognition")
         .invoke_handler(tauri::generate_handler![commands::recognize_text])
         .setup(|app, api| {
-            #[cfg(mobile)]
-            let text_recognition = mobile::init(app, api)?;
-            #[cfg(desktop)]
-            let text_recognition = desktop::init(app, api)?;
+            #[cfg(target_os = "android")]
+            let text_recognition = android::init(app, api)?;
+            #[cfg(not(target_os = "android"))]
+            let text_recognition = unsupported::init(app, api)?;
             app.manage(text_recognition);
             Ok(())
         })

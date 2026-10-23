@@ -150,7 +150,7 @@ The promise is rejected with a message:
 
 ## Help wanted: iOS
 
-The plugin has no iOS code, and the maintainer has no Mac or iPhone, so it has never been built or tried on iOS. Not even that an iOS app builds with the plugin in it: **if your app targets iOS, assume it does not work there.**
+The plugin has no iOS code: there, the command is meant to fail with "not supported", as on desktop. But the maintainer has no Mac or iPhone, so it has never been built or tried on iOS, not even that an iOS app builds with the plugin in it. **If your app targets iOS, check it yourself first.**
 
 It would be great if someone could cover that part. Apple's [Vision framework](https://developer.apple.com/documentation/vision/recognizing-text-in-images) reads text on the device, like ML Kit does on Android, and the result types are already shared by every platform. If you can build and test on iOS, please open an issue first: see [CONTRIBUTING.md](CONTRIBUTING.md).
 
