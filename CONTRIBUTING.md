@@ -2,6 +2,10 @@
 
 Thank you for wanting to help. This is a small project maintained in spare time, so a short message before a large change saves work on both sides.
 
+## Most wanted: iOS
+
+There is no iOS code, and the maintainer cannot build or test on iOS (no Mac, no iPhone). If you can, an iOS side with Apple's Vision framework would be the most useful contribution: see "Help wanted: iOS" in the [README](README.md#help-wanted-ios), and open an issue to talk about it first.
+
 ## How
 
 1. **Open an issue first** if the change is more than a small fix: a new platform, a new command, a change to the API.

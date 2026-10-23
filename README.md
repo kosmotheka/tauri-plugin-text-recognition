@@ -13,10 +13,10 @@ It was started for [Kosmotheka](https://kosmotheka.com), a household catalogue a
 | Platform | Support |
 |---|---|
 | Android | ML Kit through Google Play Services, Latin script (English, Spanish, French, German and other languages written in Latin letters). Devices without Play Services are not supported |
-| iOS | Not planned yet. Contributions welcome |
+| iOS | **Not written and never tried**: see [Help wanted: iOS](#help-wanted-ios) |
 | Desktop | Not planned yet: the command fails with "text recognition is not supported on this platform" |
 
-Every platform has the command, so your app can call it everywhere and decide what to show when it is not supported.
+On desktop the command exists, so a desktop and Android app can call it everywhere and decide what to show when it is not supported.
 
 ## Install
 
@@ -147,6 +147,12 @@ The promise is rejected with a message:
 | ML Kit fails for any other reason | `Text recognition failed: …` |
 
 **An image with no text is not an error**: it gives an empty `text` and an empty `blocks`.
+
+## Help wanted: iOS
+
+The plugin has no iOS code, and the maintainer has no Mac or iPhone, so it has never been built or tried on iOS. Not even that an iOS app builds with the plugin in it: **if your app targets iOS, assume it does not work there.**
+
+It would be great if someone could cover that part. Apple's [Vision framework](https://developer.apple.com/documentation/vision/recognizing-text-in-images) reads text on the device, like ML Kit does on Android, and the result types are already shared by every platform. If you can build and test on iOS, please open an issue first: see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Privacy
 
