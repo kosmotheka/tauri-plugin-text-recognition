@@ -1,6 +1,6 @@
 ## Default Permission
 
-Default permissions for the plugin
+Allows reading the text in an image (recognize_text).
 
 #### This default permission set includes the following:
 

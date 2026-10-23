@@ -1,5 +1,6 @@
 use serde::{Deserialize, Serialize};
 
+/// What to read.
 #[derive(Debug, Clone, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct RecognizeTextRequest {
@@ -7,6 +8,8 @@ pub struct RecognizeTextRequest {
     pub path: String,
 }
 
+/// The text found in an image. Positions are in pixels of the image upright,
+/// with its rotation tag applied.
 #[derive(Debug, Clone, Default, PartialEq, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct RecognizedText {
@@ -18,6 +21,7 @@ pub struct RecognizedText {
     pub blocks: Vec<TextBlock>,
 }
 
+/// A paragraph or a column of text, as the engine groups it.
 #[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct TextBlock {
@@ -27,6 +31,7 @@ pub struct TextBlock {
     pub lines: Vec<TextLine>,
 }
 
+/// One line of a block.
 #[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct TextLine {
@@ -39,7 +44,8 @@ pub struct TextLine {
     pub angle: Option<f32>,
 }
 
-/// A rectangle in pixels of the image.
+/// A rectangle in pixels of the image. It can start a little outside the
+/// image when the text touches its edge.
 #[derive(Debug, Clone, Copy, PartialEq, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Bounds {

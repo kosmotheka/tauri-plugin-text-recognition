@@ -22,10 +22,12 @@ pub fn init<R: Runtime, C: DeserializeOwned>(
     Ok(TextRecognition(handle))
 }
 
-/// Access to the text-recognition APIs.
+/// The plugin's API on the Rust side, from [`crate::TextRecognitionExt`].
 pub struct TextRecognition<R: Runtime>(PluginHandle<R>);
 
 impl<R: Runtime> TextRecognition<R> {
+    /// Reads the printed text in an image. An image with no text gives an
+    /// empty result, not an error.
     pub async fn recognize_text(
         &self,
         payload: RecognizeTextRequest,

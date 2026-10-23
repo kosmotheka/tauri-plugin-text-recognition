@@ -26,9 +26,26 @@ The answer travels back the same way: Kotlin builds a JSON object and resolves t
 - **`guest-js/`** is the TypeScript API, built with Rollup into `dist-js/` and published to npm.
 - **`examples/tauri-app/`** is a Tauri app that uses the plugin from the parent folder, to try it on a device.
 
+## On Android
+
+`TextRecognitionPlugin.kt` does four things:
+
+1. **Turns the path into a URI.** `content://` and `file://` pass as they are; a plain path becomes a `file://` URI. ML Kit's `InputImage.fromFilePath` opens both, and reads the image's rotation tag.
+2. **Reads it with one recognizer**, created the first time it is needed and kept for the life of the app (Kotlin's `by lazy`). ML Kit works on its own threads and calls back when it is done, so the `@Command` returns at once and resolves the `Invoke` later; on the Rust side, `run_mobile_plugin_async` waits for that answer without blocking.
+3. **Maps ML Kit's `Text` to the result**: blocks and lines with their text, box, confidence and angle. When the image is turned 90° or 270°, width and height are swapped, so the size matches the boxes, which ML Kit gives upright.
+4. **Says what went wrong** (`invoke.reject`): the image could not be opened, the model is not on the device yet (`MlKitException.UNAVAILABLE`), or recognition failed.
+
+The model is not in the plugin. `android/build.gradle.kts` depends on `play-services-mlkit-text-recognition` (D5), and the plugin's `AndroidManifest.xml` asks Play Services to download the model when the app is installed (`com.google.mlkit.vision.DEPENDENCIES`). Android merges that manifest into the app's.
+
 ## Errors
 
-Every failure reaches JavaScript as a rejected promise with a message. `src/error.rs` holds the Rust error type: `Unsupported` on desktop, and `PluginInvoke` for a failure on the Kotlin side (`invoke.reject(message)`).
+Every failure reaches JavaScript as a rejected promise with a message. `src/error.rs` holds the Rust error type: `Unsupported` on desktop, and `PluginInvoke` for a failure on the Kotlin side, which carries the message given to `invoke.reject`. The README lists the messages.
+
+## Tests
+
+- **Rust unit tests** (`cargo test`) check the JSON shape of the models: the names JavaScript sees, and that a missing box, confidence or angle is read as empty. They need no device.
+- **The example app** is the test of the Android side, by hand on a real phone: [examples/tauri-app/README.md](../examples/tauri-app/README.md) says what to try.
+- **CI** checks formatting, Clippy for Linux and for Android (`mobile.rs` only compiles for a mobile target), the tests and the TypeScript build. It does not build the Kotlin code: that needs the Android SDK and an app around it.
 
 ## Names on each side
 

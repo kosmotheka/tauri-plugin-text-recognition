@@ -307,10 +307,10 @@
           "markdownDescription": "Denies the recognize_text command without any pre-configured scope."
         },
         {
-          "description": "Default permissions for the plugin\n#### This default permission set includes:\n\n- `allow-recognize-text`",
+          "description": "Allows reading the text in an image (recognize_text).\n#### This default permission set includes:\n\n- `allow-recognize-text`",
           "type": "string",
           "const": "default",
-          "markdownDescription": "Default permissions for the plugin\n#### This default permission set includes:\n\n- `allow-recognize-text`"
+          "markdownDescription": "Allows reading the text in an image (recognize_text).\n#### This default permission set includes:\n\n- `allow-recognize-text`"
         }
       ]
     }
