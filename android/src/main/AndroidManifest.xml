@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Lets the app find the camera app since Android 11: without it, Tauri's <input capture> falls back to the photo picker. -->
+    <queries>
+        <intent>
+            <action android:name="android.media.action.IMAGE_CAPTURE" />
+        </intent>
+    </queries>
     <application>
         <!-- Asks Google Play Services to download the model when the app is installed, not on first use. -->
         <meta-data
