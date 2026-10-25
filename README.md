@@ -87,7 +87,7 @@ The [example app](examples/tauri-app) does more: it takes a photo with the camer
 ### Where the image comes from
 
 - **A file the user picks**: the dialog plugin's `open()` gives a `content://` URI. Pass it as it is.
-- **A photo from the camera**: on Android, an `<input type="file" accept="image/*" capture="environment">` opens the system camera with no camera permission in your app. It gives you a `File` in JavaScript, not a path: write it to your app's cache with [the fs plugin](https://v2.tauri.app/plugin/file-system/) and pass that path. The example app does exactly this.
+- **A photo from the camera**: on Android, an `<input type="file" accept="image/*" capture="environment">` opens the system camera with no camera permission in your app (the plugin declares the camera query Android 11 and later need for that). It gives you a `File` in JavaScript, not a path: write it to your app's cache with [the fs plugin](https://v2.tauri.app/plugin/file-system/) and pass that path. The example app does exactly this.
 - **A file your app already has**: pass its path.
 
 Large photos are decoded whole. For a back cover, a copy around 2000 px on its longer side is usually enough and faster; for a photo of a whole shelf, where the text is small, try both. The example app has a switch to compare.
