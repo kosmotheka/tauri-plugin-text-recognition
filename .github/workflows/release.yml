@@ -67,7 +67,7 @@ jobs:
         run: |
           # Trusted publishing needs npm 11.5.1 or later; Node 22 comes with npm 10.
           npm install -g npm@11.6.2
-          npm ci --no-audit --no-fund
+          npm install --no-audit --no-fund
           npm publish
 
       - name: GitHub release, with the version's section of the changelog

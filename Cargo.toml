@@ -1,6 +1,6 @@
 [package]
 name = "tauri-plugin-text-recognition"
-version = "0.1.0"
+version = "0.1.1"
 authors = [ "Kosmotheka contributors" ]
 description = "Read printed text from images on the device, with ML Kit on Android. No network."
 edition = "2021"

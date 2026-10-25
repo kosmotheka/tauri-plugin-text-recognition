@@ -2,6 +2,14 @@
 
 All notable changes to this project are written here, for the people who use the plugin. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and versions follow [Semantic Versioning](https://semver.org/).
 
+## [0.1.1] - 2026-10-25
+
+No change to the plugin itself.
+
+### Changed
+
+- Published from GitHub Actions with trusted publishing, so the npm package carries provenance: it says which workflow, in which repository and commit, built it.
+
 ## [0.1.0] - 2026-10-25
 
 The first version: read the text in an image on Android.
