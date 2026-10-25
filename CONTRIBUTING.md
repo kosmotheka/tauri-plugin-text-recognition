@@ -34,6 +34,13 @@ docker run --rm -v "$PWD":/repo zricethezav/gitleaks:v8.28.0 git /repo --redact 
 
 Android changes are tested by hand with the example app in `examples/tauri-app` on a real device: say in the pull request what you tried.
 
+## Releasing (maintainers)
+
+1. Raise the version in `Cargo.toml` and `package.json` (and `Cargo.lock`), and turn `[Unreleased]` in `CHANGELOG.md` into `[x.y.z] - date`.
+2. Push that commit, then a tag `vx.y.z`.
+
+The `Release` workflow does the rest: it checks that the tag, both manifests and the changelog agree, publishes to crates.io and npm with trusted publishing (no tokens: each registry trusts `release.yml` in the `release` environment of this repository), and creates the GitHub release from the changelog. Re-running it skips what is already published.
+
 ## Licence of contributions
 
 Contributions are accepted under the project's licence, MIT OR Apache-2.0, as the README says. There is no CLA.

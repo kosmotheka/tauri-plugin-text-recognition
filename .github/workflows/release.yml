@@ -1,0 +1,79 @@
+name: Release
+
+# Pushing a tag such as v0.2.0 publishes that version: to crates.io and npm with trusted publishing (no token is
+# stored anywhere: each registry trusts this workflow, in this repository and environment), then the GitHub release
+# with the version's section of the changelog. Each step skips what is already published, so a failed run can be
+# re-run.
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment: release
+    permissions:
+      contents: write # the GitHub release
+      id-token: write # trusted publishing
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: The tag, Cargo.toml, package.json and the changelog say the same version
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          echo "VERSION=$version" >> "$GITHUB_ENV"
+          grep -q "^version = \"$version\"" Cargo.toml || { echo "::error::Cargo.toml is not at $version"; exit 1; }
+          [ "$(node -p "require('./package.json').version")" = "$version" ] || { echo "::error::package.json is not at $version"; exit 1; }
+          grep -q "^## \[$version\]" CHANGELOG.md || { echo "::error::CHANGELOG.md has no section for $version"; exit 1; }
+
+      - uses: dtolnay/rust-toolchain@b725eda525362e7cf34af9a7243cac1e3f01a7ec # stable
+        with:
+          toolchain: stable
+      - name: Install the libraries Tauri needs on Linux (cargo publish builds the crate)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev
+
+      - name: Is this version on crates.io already?
+        id: crate
+        run: |
+          code=$(curl -s -o /dev/null -w '%{http_code}' -A "tauri-plugin-text-recognition release" \
+            "https://crates.io/api/v1/crates/tauri-plugin-text-recognition/$VERSION")
+          echo "published=$([ "$code" = 200 ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+      - uses: rust-lang/crates-io-auth-action@c6f97d42243bad5fab37ca0427f495c86d5b1a18 # v1.0.5
+        if: steps.crate.outputs.published == 'false'
+        id: auth
+      - name: Publish to crates.io
+        if: steps.crate.outputs.published == 'false'
+        run: cargo publish
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ steps.auth.outputs.token }}
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+      - name: Is this version on npm already?
+        id: npm
+        run: |
+          code=$(curl -s -o /dev/null -w '%{http_code}' "https://registry.npmjs.org/tauri-plugin-text-recognition-api/$VERSION")
+          echo "published=$([ "$code" = 200 ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+      - name: Publish to npm
+        if: steps.npm.outputs.published == 'false'
+        run: |
+          # Trusted publishing needs npm 11.5.1 or later; Node 22 comes with npm 10.
+          npm install -g npm@11.6.2
+          npm ci --no-audit --no-fund
+          npm publish
+
+      - name: GitHub release, with the version's section of the changelog
+        run: |
+          gh release view "$GITHUB_REF_NAME" > /dev/null 2>&1 && exit 0
+          awk -v v="$VERSION" '$0 ~ "^## \\[" v "\\]" {found=1; next} found && /^## \[/ {exit} found' CHANGELOG.md > notes.md
+          gh release create "$GITHUB_REF_NAME" --title "$GITHUB_REF_NAME" --notes-file notes.md
+        env:
+          GH_TOKEN: ${{ github.token }}
