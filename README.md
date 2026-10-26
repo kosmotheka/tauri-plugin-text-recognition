@@ -2,7 +2,7 @@
 
 A [Tauri 2](https://v2.tauri.app) plugin that reads printed text from an image **on the device**, with no network: [ML Kit text recognition](https://developers.google.com/ml-kit/vision/text-recognition/v2) on Android.
 
-> **Status: 0.1 is written and being tried on phones.** Nothing is published on crates.io or npm yet. The plan: [docs/plans/0.1.md](docs/plans/0.1.md).
+> **Status: 0.1 is published** on [crates.io](https://crates.io/crates/tauri-plugin-text-recognition) and [npm](https://www.npmjs.com/package/tauri-plugin-text-recognition-api), and used by [Kosmotheka](https://kosmotheka.com) on Android phones. What 0.1 covers and what was tried: [docs/plans/0.1.md](docs/plans/0.1.md).
 
 Give it an image file and it returns the text it finds, in blocks and lines, each with its position in the image. What to do with that text is up to your app: the plugin does not look for anything in particular.
 
