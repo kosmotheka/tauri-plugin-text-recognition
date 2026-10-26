@@ -12,6 +12,11 @@ updates:
     directory: /
     schedule:
       interval: monthly
+    ignore:
+      # TypeScript 7, the compiler rewritten in Go, no longer has the JavaScript API that
+      # @rollup/plugin-typescript builds with. Lift this once that plugin supports it.
+      - dependency-name: typescript
+        versions: [">=7"]
   - package-ecosystem: gradle
     directory: /android
     schedule:
