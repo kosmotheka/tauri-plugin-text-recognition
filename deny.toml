@@ -1,0 +1,4 @@
+[advisories]
+# Unmaintained crates deep in Tauri's tree (such as proc-macro-error, under GTK) are reported,
+# not fatal: there is nothing to switch to until Tauri does. Ours are still checked.
+unmaintained = "workspace"
