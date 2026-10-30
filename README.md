@@ -20,7 +20,7 @@ On desktop the command exists, so a desktop and Android app can call it everywhe
 
 ## Install
 
-Not published yet. Once it is, add the Rust crate to your app's `src-tauri` and the JavaScript API to the app:
+Add the Rust crate to your app's `src-tauri` and the JavaScript API to the app:
 
 ```sh
 cd src-tauri && cargo add tauri-plugin-text-recognition
